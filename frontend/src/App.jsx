@@ -6,7 +6,7 @@ const App = () => {
     const [shorturl,setShorturl]=useState(null);
     const [urls,setUrls]=useState([])
     const handleShorten=async ()=>{
-        const response=await fetch("http://localhost:5000/shorten",{
+        const response=await fetch("https://url-shortener-1-pdsy.onrender.com/shorten",{
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
@@ -19,7 +19,7 @@ const App = () => {
     }
 
     const loadurls=async ()=>{
-      const response=await fetch("http://localhost:5000/all");
+      const response=await fetch("https://url-shortener-1-pdsy.onrender.com/all");
       const data=await response.json();
       setUrls(data);
 
@@ -53,7 +53,7 @@ const App = () => {
          
         urls.map((item)=>(
           <div key={item.id}>
-            <a href={`http://localhost:5000/${item.short_id}`} target="_blank">{item.short_id}</a>
+            <a href={`https://url-shortener-1-pdsy.onrender.com/${item.short_id}`} target="_blank">{item.short_id}</a>
             <p>Short : {item.short_id}</p>
             
             <hr />
