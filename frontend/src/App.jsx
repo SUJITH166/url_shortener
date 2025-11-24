@@ -4,7 +4,8 @@ const App = () => {
     // const [input,setInput]=useState('');
     const [longurl,setLongurl]=useState('');
     const [shorturl,setShorturl]=useState(null);
-    const [urls,setUrls]=useState([])
+    const [urls,setUrls]=useState([]);
+    const [error, setError] = useState(null);
     const handleShorten=async ()=>{
         const response=await fetch("https://url-shortener-1-pdsy.onrender.com/shorten",{
             method:"POST",
@@ -13,17 +14,46 @@ const App = () => {
             },
             body:JSON.stringify({url:longurl})
         });
+        if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Failed to shorten URL. Status: ${response.status}. Check your backend server logs on Render.`);
+            }
         const data=await response.json();
         setShorturl(data.shortId);
         loadurls();
     }
 
     const loadurls=async ()=>{
-      const response=await fetch("https://url-shortener-1-pdsy.onrender.com/all");
+     try{ const response=await fetch("https://url-shortener-1-pdsy.onrender.com/all");
+      if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Failed to load URLs. Status: ${response.status}. Check your backend server logs on Render.`);
+            }
+            
       const data=await response.json();
-      setUrls(data);
+      setUrls(data);}
+      catch(err){
+          console.error("Error loading URLs:", err);
+            setError(err.message || "An unknown error occurred while loading URLs.");
+      }
 
     }
+
+    const handledelete=async(id)=>{
+      try{
+        const response=await fetch(`https://url-shortener-1-pdsy.onrender.com/delete/${id}`,{
+        method:"DELETE",
+      });
+      if (!response.ok) {
+                const errorText = await response.text();
+                 throw new Error(`Failed to delete URL. Status: ${response.status}. Check your backend server logs on Render.`);
+            }
+      loadurls();}
+      catch(err){
+        console.error("Error loading URLs:", err);
+            setError(err.message || "An unknown error occurred while loading URLs.");
+      }
+    };
 
     useEffect(()=>{
       loadurls();
@@ -53,8 +83,9 @@ const App = () => {
          
         urls.map((item)=>(
           <div key={item.id}>
+            <span>Short : {item.short_id} </span>
             <a href={`https://url-shortener-1-pdsy.onrender.com/${item.short_id}`} target="_blank">{item.short_id}</a>
-            <p>Short : {item.short_id}</p>
+            <button onClick={()=>handledelete(item.id)}>Delete</button>
             
             <hr />
           </div>

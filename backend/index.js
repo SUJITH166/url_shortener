@@ -3,11 +3,13 @@ const cors=require('cors')
 const {nanoid}=require('nanoid')
 const app=express();
 
-const shortenurl=require('./urlRoute/shortenurl')
+const shortenurl=require('./urlRoute/shortenurl');
+const deleteurl=require('./urlRoute/deleteurl');
 app.use(cors());
 app.use(express.json());
 
-app.use('/',shortenurl)
+app.use('/', shortenurl);
+app.use('/delete', deleteurl);
 
 
 app.listen(5000, () => {

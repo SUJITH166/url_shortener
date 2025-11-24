@@ -1,7 +1,8 @@
 const express=require('express');
 const {nanoid}=require('nanoid');
 const router=express.Router();
-const pool=require('../db/db')
+const pool=require('../db/db');
+
 router.post('/shorten',async (req,res)=>{
     const {url}=req.body;
     // console.log("url recived",url);
