@@ -53,8 +53,9 @@ const App = () => {
          
         urls.map((item)=>(
           <div key={item.id}>
+            <a href={`http://localhost:5000/${item.short_id}`} target="_blank">{item.short_id}</a>
             <p>Short : {item.short_id}</p>
-            <p>Long : {item.long_url}</p>
+            
             <hr />
           </div>
         ))

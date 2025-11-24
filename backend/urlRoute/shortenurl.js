@@ -28,4 +28,21 @@ router.get('/all',async (req,res)=>{
         res.status(500).json({error:"Database Error"})
     }
 });
+
+router.get('/:shortId',async(req,res)=>{
+    const {shortId}=req.params;
+    try{
+        const result=await pool.query("SELECT long_url FROM urls WHERE short_id=$1",
+            [shortId]);
+        if(result.rows.length===0)
+        {
+            return res.status(404).send("URL Not Found");
+        }
+        const longurl=result.rows[0].long_url;
+        return res.redirect(longurl);
+    }catch(error){
+        console.error(error)
+        res.status(500).send("server error")
+    }
+});
 module.exports = router;
