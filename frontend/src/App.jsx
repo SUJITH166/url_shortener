@@ -8,35 +8,33 @@ const App = () => {
   const [error, setError] = useState(null);
   const [customShort, setCustomShort] = useState('');
   const handleShorten = async () => {
+  try {
     const response = await fetch(
       "https://url-shortener-1-pdsy.onrender.com/shorten",
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: longurl, customShort }),
       }
     );
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(
-        `Failed to shorten URL. Status: ${response.status}. Check your backend server logs on Render.`
-      );
-    }
-   const data = await response.json();
-if (data.error) {
-  alert(data.error);
-} else {
-  setShorturl(data.shortId);
-  loadurls(); // refresh the list
-}
 
-    // setShorturl(data.shortId);
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.error || `Failed to shorten URL. Status: ${response.status}`);
+      return;
+    }
+
+    setShorturl(data.shortId);
     setLongurl("");
-    setCustomShort('')
-    loadurls();
-  };
+    setCustomShort('');
+    loadurls(); 
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong. Check your backend logs.");
+  }
+};
+
 
   const loadurls = async () => {
     try {
