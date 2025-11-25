@@ -24,9 +24,17 @@ const App = () => {
         `Failed to shorten URL. Status: ${response.status}. Check your backend server logs on Render.`
       );
     }
-    const data = await response.json();
-    setShorturl(data.shortId);
+   const data = await response.json();
+if (data.error) {
+  alert(data.error);
+} else {
+  setShorturl(data.shortId);
+  loadurls(); // refresh the list
+}
+
+    // setShorturl(data.shortId);
     setLongurl("");
+    setCustomShort('')
     loadurls();
   };
 
