@@ -86,13 +86,7 @@ const App = () => {
         onChange={(e) => setLongurl(e.target.value)}
       />
       <input
-        type="text"
-        placeholder="Enter URL"
-        value={longurl}
-        onChange={(e) => setLongurl(e.target.value)}
-      />
-
-      <input
+      style={{ padding: 10, width: "10%" }}
         type="text"
         placeholder="Custom short link"
         value={customShort}
