@@ -3,22 +3,29 @@ const {nanoid}=require('nanoid');
 const router=express.Router();
 const pool=require('../db/db');
 
-router.post('/shorten',async (req,res)=>{
-    const {url}=req.body;
-    // console.log("url recived",url);
+router.post('/shorten', async (req, res) => {
+  const { url, customShort } = req.body;
 
-    const shortId=nanoid(7);
-    try{
-        await pool.query(
-            "INSERT INTO urls(short_id,long_url) VALUES ($1,$2)",[shortId,url]
-        );
-        res.json({shortId})
+  // If user provides customShort, use it; else generate nanoid
+  const shortId = customShort && customShort.trim() !== '' ? customShort : nanoid(7);
+    try {
+    await pool.query(
+      "INSERT INTO urls(short_id, long_url) VALUES ($1, $2)",
+      [shortId, url]
+    );
+    res.json({ shortId });
+  } catch (error) {
+    console.error("DB Error:", error);
+
+    //duplicate custom link
+    if (error.code === '23505') {
+      return res.status(400).json({ error: "Custom short link already exists" });
     }
-    catch(error){
-        console.error("DB Error :",error);
-        res.status(500).json({error :"Database error"})
-    }
+
+    res.status(500).json({ error: "Database error" });
+  }
 });
+
 
 router.get('/all',async (req,res)=>{
     try{
